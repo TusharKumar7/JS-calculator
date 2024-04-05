@@ -58,7 +58,7 @@ for (let i = 0; i < keyArray.length; i++) {
                         num = [];
                     }
                     num.push(currentKey);
-                    outputText.push(currentKey);
+                    outputText?.push(currentKey);
                     output.value = outputText.join("");
                 }
         }

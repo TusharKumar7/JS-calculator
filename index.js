@@ -16,16 +16,11 @@ for (let i = 0; i < keyArray.length; i++) {
         switch (currentKey) {
             case "=": {
                 outputText = output.value;
-                let resultParam = "";
-                if (typeof (output.value) === 'string') {
-                    resultParam = outputText;
-                }
-                else {
-                    resultParam = outputText.join("");
-                }
+                let resultParam = Array.isArray(output.value) ? outputText.join("") : outputText;
                 let result = calculateExpression(resultParam);
                 if (result?.toString().includes(".")) {
                     result = result.toFixed(2);
+                    output.value=result;
                 }
                 else if (result === Infinity) {
                     output.value = "Infinity";
@@ -70,7 +65,7 @@ for (let i = 0; i < keyArray.length; i++) {
 function calculateExpression(expression) {
     let numbers = [];
     let operators = [];
-    // Helper function to perform arithmetic operations
+    // Helper function 
     function performOperation() {
         const operator = operators.pop();
         const operand2 = numbers.pop();
@@ -93,36 +88,44 @@ function calculateExpression(expression) {
     // Loop through each character in the expression
     for (let i = 0; i < expression.length; i++) {
         const char = expression[i];
-        // If character is a digit, parse the number
-        if (!isNaN(parseInt(char))) {
+        if (!isNaN(parseInt(char)) || char === ".") {
             let numStr = "";
-            // let num=parseInt(char);
             while (!isNaN(parseInt(expression[i])) || expression[i] === ".") {
                 numStr += expression[i];
                 i++;
             }
             numbers.push(parseFloat(numStr));
-            i--;
+            i--; 
         }
         // If character is an operator, push to operators array
         else if (char === "+" || char === "-" || char === "*" || char === "/") {
-            while (
-                operators.length > 0 &&
-                precedence(operators[operators.length - 1]) >= precedence(char)
-            ) {
-                performOperation();
+            if (char === "-" && (i === 0 || "+-*/".includes(expression[i - 1]))) {
+                let numStr = "-";
+                i++;
+                while (!isNaN(parseInt(expression[i])) || expression[i] === ".") {
+                    numStr += expression[i];
+                    i++;
+                }
+                numbers.push(parseFloat(numStr));
+                i--;
+            } else {
+                while (
+                    operators.length > 0 &&
+                    precedence(operators[operators.length - 1]) >= precedence(char)
+                ) {
+                    performOperation();
+                }
+                operators.push(char);
             }
-            operators.push(char);
         }
     }
-    // Perform remaining operations
     while (operators.length > 0) {
         performOperation();
     }
 
-    if (numbers)
-        // The result should be the only number left in the numbers array
+    if (numbers){
         return numbers.pop();
+    }
 }
 
 // Helper function to determine operator precedence

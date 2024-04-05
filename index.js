@@ -2,7 +2,6 @@ const output = document.querySelector(".inputField");
 const keys = document.querySelectorAll(".key");
 
 let outputText = [];
-// console.log(outputText);
 
 const keyArray = Array.from(keys);
 output.value = 0;
@@ -49,8 +48,11 @@ for (let i = 0; i < keyArray.length; i++) {
                     num = ["0", "."];
                 }
                 else if (
+                    // 2 consecutive operators are not allowed
                     !("+,-,*,/".includes(currentKey) && ("+,-,*,/".includes(outputText[outputText.length - 1]))) &&
+                    // operator in starting is not allowed
                     !(outputText.length === 0 && "+,*,/".includes(currentKey)) &&
+                    // two dots in one number is not allowed
                     !(num.includes(".") && currentKey === ".")) {
                     if ("+,-,*,/".includes(currentKey)) {
                         num = [];
@@ -62,6 +64,8 @@ for (let i = 0; i < keyArray.length; i++) {
         }
     });
 }
+
+// function to perform calculation
 function calculateExpression(expression) {
     let numbers = [];
     let operators = [];
@@ -97,8 +101,9 @@ function calculateExpression(expression) {
             numbers.push(parseFloat(numStr));
             i--; 
         }
-        // If character is an operator, push to operators array
+        // If character is an operator
         else if (char === "+" || char === "-" || char === "*" || char === "/") {
+            // for -ve interger
             if (char === "-" && (i === 0 || "+-*/".includes(expression[i - 1]))) {
                 let numStr = "-";
                 i++;
@@ -128,7 +133,7 @@ function calculateExpression(expression) {
     }
 }
 
-// Helper function to determine operator precedence
+// function to determine operator precedence
 function precedence(operator) {
     switch (operator) {
         case "+":

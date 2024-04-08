@@ -14,7 +14,7 @@ for (let i = 0; i < keyArray.length; i++) {
     keyArray[i].addEventListener("click", () => {
         switch (currentKey) {
             case "=": {
-                outputText = output.value;
+                outputText = output.value.split("");
                 let resultParam = Array.isArray(output.value) ? outputText.join("") : outputText;
                 let result = calculateExpression(resultParam);
                 if (result?.toString().includes(".")) {
